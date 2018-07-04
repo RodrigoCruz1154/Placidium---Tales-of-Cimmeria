@@ -23,7 +23,7 @@ public class GestorPrincipal {
     }
 
     public static void main(String[] args) {
-        GestorPrincipal juego = new GestorPrincipal("Placidium", 1000, 402);
+        GestorPrincipal juego = new GestorPrincipal("Placidium", 840, 560);
 
         juego.iniciarJuego();
         juego.iniciarBuclePrincipal();
@@ -49,7 +49,6 @@ public class GestorPrincipal {
         double tiempoTranscurrido;
         double delta = 0; //cantidad de tiempo recorrido hasta que se realiza una actualización
 
-//        requestFocus(); //método por defecto de java que al añadirlo, hace que automáticamente la ventana que se cree sea el foco de uso y se pueda usar inmediatamente.
         while (enFuncionamiento) {
             final long inicioBucle = System.nanoTime();
 
@@ -81,16 +80,17 @@ public class GestorPrincipal {
      * Inicia todos los componentes a usar en el juego
      */
     private void inicializar() {
-        sd = new SuperficieDeDibujo();
+        sd = new SuperficieDeDibujo(ancho,alto);
         ventana = new Ventana(titulo,sd);
         ge = new GestorDeEstados();
     }
 
     private void actualizar() {
-//        ge.actualizar();
+        sd.getTeclado().actualizar();
+        ge.actualizar();
     }
 
     private void dibujar() {
-//        ge.dibujar();
+        sd.dibujar(ge);
     }
 }
