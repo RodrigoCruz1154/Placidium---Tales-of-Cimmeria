@@ -1,7 +1,7 @@
 package principal.maquinadeestado;
 
 import java.awt.Graphics;
-import principal.maquinadeestado.juego.Gestordejuego;
+import principal.maquinadeestado.estados.juego.Gestordejuego;
 
 /**
  * Controla el estado en que se encuentra el juego (titulo, main, batalla, etc.) y se dibuje a si mismo.
