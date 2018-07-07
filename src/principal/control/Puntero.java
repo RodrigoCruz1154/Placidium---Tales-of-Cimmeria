@@ -1,14 +1,30 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package principal.control;
 
+import java.awt.Cursor;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import principal.herramientas.CargadorRecursos;
+
 /**
- *
- * @author Rodrigo Cruz <00115417@uca.edu.sv>
+ * Establece un puntero distinto.
  */
 public class Puntero {
+    
+    private final Cursor cursor;
+
+    public Puntero() {
+        Toolkit configuracion = Toolkit.getDefaultToolkit();
+        
+        BufferedImage icono = CargadorRecursos.cargarImagenCompatibleTraslucida("/imagenes/iconos/iconoCursor.png");
+        
+        Point punta = new Point(0,0);
+        
+        this.cursor = configuracion.createCustomCursor(icono, punta, "Default");
+    }
+
+    public Cursor getCursor() {
+        return this.cursor;
+    }
     
 }
