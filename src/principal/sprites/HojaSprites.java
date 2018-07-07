@@ -58,6 +58,7 @@ public class HojaSprites {
         sprites = new Sprite[anchoHojaenSprites * altoHojaenSprites];
         extraerSprites(imagen);
     }
+
     /**
      * Rellena los sprites desde una imagen
      * @param imagen 

@@ -1,17 +1,18 @@
 package principal.maquinadeestado.estados.juego;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import principal.herramientas.CargadorRecursos;
+import principal.mapas.Mapa;
 import principal.maquinadeestado.EstadoJuego;
 import principal.sprites.HojaSprites;
 /**
  * Clase encargada de dibujar los graficos en pantalla.
  */
-public class Gestordejuego implements EstadoJuego{
+public class Gestordejuego implements EstadoJuego{    
     
-    private GestorMapa gestorMapa;
-    HojaSprites hs = new HojaSprites("/imagenes/hojasTexturas/texturas.png",32,true);
-    
+    Mapa mapa = new Mapa("/texto/mapa.txt");
     
     @Override
     public void actualizar() {
@@ -20,8 +21,9 @@ public class Gestordejuego implements EstadoJuego{
 
     @Override
     public void dibujar(Graphics g) {
-        BufferedImage imagen = hs.getSprite(0,0).getImagen();
-        g.drawImage(imagen, 150, 100,null);
+        for(int i=0;i<mapa.getPaleta().length;i++){
+            g.drawImage(mapa.getSprite(i).getImagen(), i*32, 0,null);
+        }
     }
     
 }
