@@ -1,5 +1,7 @@
 package principal.mapas;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import principal.herramientas.CargadorRecursos;
@@ -44,7 +46,6 @@ public class Mapa {
 
         sprites = extraerSprites(cadenasSprites);
     }
-
 //métodos
     /**
      * Traduce la Paleta de Sprites en información que proporciona
@@ -129,6 +130,16 @@ public class Mapa {
         }
 
         return VectorDeSprites;
+    }
+
+    public void dibujar(Graphics g) {
+        int anchoSprite = this.paleta[0].getAncho();
+        int altoSprite = this.paleta[0].getAlto();
+        for (int y = 0; y < this.alto; y++) {
+            for (int x = 0; x < this.ancho; x++) {
+                g.drawImage(paleta[sprites[x+y*this.ancho]].getImagen(), x * anchoSprite, y * altoSprite, null);
+            }
+        }
     }
 //getters
 

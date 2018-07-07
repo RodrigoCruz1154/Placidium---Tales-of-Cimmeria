@@ -21,9 +21,7 @@ public class Gestordejuego implements EstadoJuego{
 
     @Override
     public void dibujar(Graphics g) {
-        for(int i=0;i<mapa.getPaleta().length;i++){
-            g.drawImage(mapa.getSprite(i).getImagen(), i*32, 0,null);
-        }
+        mapa.dibujar(g);
     }
     
 }
