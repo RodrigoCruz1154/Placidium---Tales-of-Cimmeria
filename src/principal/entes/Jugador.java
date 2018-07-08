@@ -58,6 +58,12 @@ public class Jugador {
         enMovimiento = false;
         determinarDireccion();
         animar();
+        if(GestorControles.teclado.corriendo){
+            velocidad = 2;
+            animarCorriendo();
+        } else{
+            velocidad = 1;
+        }
         if(GestorControles.teclado.esc.isPulsada()){
             System.exit(0);
         }
@@ -272,6 +278,14 @@ public class Jugador {
             animacion = 0;
         }
         imagenActual = hs.getSprite(direccion, estado).getImagen();
+    }
+    
+    private void animarCorriendo() {
+        if(!enMovimiento){
+            estado = 0;
+            animacion = 0;
+        }
+        imagenActual = hs.getSprite(direccion, estado+2).getImagen();
     }
 
     public void dibujar(Graphics g) {
