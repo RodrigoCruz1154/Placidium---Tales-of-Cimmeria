@@ -1,6 +1,7 @@
 package principal.mapas;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,14 +21,19 @@ public class Mapa {
 
     private final boolean[] colisiones;
 
+    public ArrayList<Rectangle> AreasColision = new ArrayList <Rectangle>();
+    
     private final int[] sprites;
+
+    private final int MARGEN_X = Constantes.ANCHO_PANTALLA / 2 - Constantes.LADOSPRITE / 2;
+    private final int MARGEN_Y = Constantes.ALTO_PANTALLA / 2 - Constantes.LADOSPRITE / 2;
 
 //constructores    
     public Mapa(final String ruta) {
-        
+
         String contenido = CargadorRecursos.leerArchivoTexto(ruta);
         partes = contenido.split("\\*"); //romper la cadena hasta donde se le indique en el parámetro. Si es un patrón de expresión regular, entonces se colocan las barras invertidas para expresar que será propiamente el contenido
-        
+
         ancho = Integer.parseInt(partes[0]);
         alto = Integer.parseInt(partes[0]);
 
@@ -36,8 +42,8 @@ public class Mapa {
 
         String paletaEntera = partes[3];
         String[] partesPaleta = paletaEntera.split("#");
-        
-        paleta = asignarSprites(partesPaleta,HojasSeparadas);
+
+        paleta = asignarSprites(partesPaleta, HojasSeparadas);
 
         String colisionesEnteras = partes[4];
         colisiones = extraerColisiones(colisionesEnteras);
@@ -48,6 +54,7 @@ public class Mapa {
         sprites = extraerSprites(cadenasSprites);
     }
 //métodos
+
     /**
      * Traduce la Paleta de Sprites en información que proporciona
      * <p>
@@ -61,18 +68,18 @@ public class Mapa {
      * @return
      */
     private Sprite[] asignarSprites(final String[] partesPaleta, final String[] hojasSeparadas) {
-        
+
         Sprite[] paleta = new Sprite[partesPaleta.length];
-        
-        HojaSprites hoja = new HojaSprites("/imagenes/hojasTexturas/"+ hojasSeparadas[0]+ ".png",32,false);
-        for(int i=0;i<partesPaleta.length;i++){
+
+        HojaSprites hoja = new HojaSprites("/imagenes/hojasTexturas/" + hojasSeparadas[0] + ".png", 32, false);
+        for (int i = 0; i < partesPaleta.length; i++) {
             String spriteTemporal = partesPaleta[i];
             String[] partesSprite = spriteTemporal.split("-");
-            
+
             int indicePaleta = Integer.parseInt(partesSprite[0]);
             int indiceSpriteHoja = Integer.parseInt(partesSprite[2]);
-            
-            paleta[indicePaleta] = hoja.getSprite(indiceSpriteHoja);            
+
+            paleta[indicePaleta] = hoja.getSprite(indiceSpriteHoja);
         }
         return paleta;
     }
@@ -134,13 +141,46 @@ public class Mapa {
     }
 
     public void dibujar(Graphics g, int posicionX, int posicionY) {
-        int anchoSprite = Constantes.LADOSPRITE;
-        int altoSprite = anchoSprite;
         for (int y = 0; y < this.alto; y++) {
             for (int x = 0; x < this.ancho; x++) {
-                g.drawImage(paleta[sprites[x+y*this.ancho]].getImagen(), x * anchoSprite - posicionX, y * altoSprite - posicionY, null);
+
+                int puntoX = x * Constantes.LADOSPRITE - posicionX + MARGEN_X;
+                int puntoY = y * Constantes.LADOSPRITE - posicionY + MARGEN_Y;
+
+                g.drawImage(paleta[sprites[x + y * this.ancho]].getImagen(), puntoX, puntoY, null);
             }
         }
+    }
+    
+    public void actualizar(final int posicionX, final int posicionY){
+        actualizarAreasColision(posicionX,posicionY);
+    }
+    
+    private void actualizarAreasColision(final int posicionX, final int posicionY){
+        if(!AreasColision.isEmpty()){
+            AreasColision.clear();
+        }
+        
+        for(int y = 0; y<this.alto;y++){
+            for (int x = 0; x < this.ancho; x++) {
+                int puntoX = x * Constantes.LADOSPRITE - posicionX + MARGEN_X;
+                int puntoY = y * Constantes.LADOSPRITE - posicionY + MARGEN_Y;
+                
+                if(colisiones[x+y*this.ancho]){
+                    final Rectangle r = new Rectangle(puntoX,puntoY,Constantes.LADOSPRITE,Constantes.LADOSPRITE);
+                    AreasColision.add(r);
+                }
+            }
+        }
+    }
+
+    public Rectangle obtenerBordes(final int posicionX, final int posicionY, final int anchoJugador, final int altoJugador) {
+        int x = MARGEN_X - posicionX + anchoJugador;
+        int y = MARGEN_Y - posicionY + altoJugador;
+        int ancho = this.ancho * Constantes.LADOSPRITE - anchoJugador * 2;
+        int alto = this.alto * Constantes.LADOSPRITE - altoJugador * 2;
+
+        return new Rectangle(x, y, ancho, alto);
     }
 //getters
 
@@ -151,17 +191,17 @@ public class Mapa {
     public int getAlto() {
         return this.alto;
     }
-    
-    public Sprite getSprite(final int indice){
+
+    public Sprite getSprite(final int indice) {
         return paleta[indice];
     }
-    
-    public Sprite getSpritePaleta(final int x, final int y){
-        return paleta[x+y*this.ancho];
+
+    public Sprite getSpritePaleta(final int x, final int y) {
+        return paleta[x + y * this.ancho];
     }
-    
-    public Sprite[] getPaleta(){
+
+    public Sprite[] getPaleta() {
         return paleta;
     }
-    
+
 }

@@ -4,6 +4,7 @@ import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import principal.Constantes;
 import principal.herramientas.CargadorRecursos;
 
 /**
@@ -16,7 +17,7 @@ public class Puntero {
     public Puntero() {
         Toolkit configuracion = Toolkit.getDefaultToolkit();
         
-        BufferedImage icono = CargadorRecursos.cargarImagenCompatibleTraslucida("/imagenes/iconos/iconoCursor.png");
+        BufferedImage icono = CargadorRecursos.cargarImagenCompatibleTraslucida(Constantes.RUTA_PUNTERO);
         
         Point punta = new Point(0,0);
         

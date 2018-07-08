@@ -3,6 +3,7 @@ package principal.maquinadeestado.estados.juego;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import principal.Constantes;
 import principal.control.GestorControles;
 import principal.entes.Jugador;
 import principal.herramientas.CargadorRecursos;
@@ -13,13 +14,13 @@ import principal.sprites.HojaSprites;
  * Clase encargada de dibujar los graficos en pantalla.
  */
 public class Gestordejuego implements EstadoJuego{    
-    
-    Jugador jugador = new Jugador(1,1);
-    Mapa mapa = new Mapa("/texto/mapa.txt");
+    Mapa mapa = new Mapa(Constantes.RUTA_MAPA);
+    Jugador jugador = new Jugador(20,130,mapa);
     
     @Override
     public void actualizar() {
         jugador.actualizar();
+        mapa.actualizar((int)jugador.getPosicionX(),(int)jugador.getPosicionY());
     }
 
     @Override

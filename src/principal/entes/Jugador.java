@@ -2,9 +2,11 @@ package principal.entes;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import principal.Constantes;
 import principal.control.GestorControles;
+import principal.mapas.Mapa;
 import principal.sprites.HojaSprites;
 import principal.sprites.Sprite;
 
@@ -28,16 +30,27 @@ public class Jugador {
     private int animacion;
 
     private int estado;
+    
+    private Mapa mapa;
+    
+    private int ANCHO_JUGADOR = 16;
+    private int ALTO_JUGADOR = 16;
+    
+    private final Rectangle LIMITE_ARRIBA = new Rectangle(Constantes.CENTRO_VENTANA_X-8,Constantes.CENTRO_VENTANA_Y,16,1);
+    private final Rectangle LIMITE_ABAJO = new Rectangle(Constantes.CENTRO_VENTANA_X-8,Constantes.CENTRO_VENTANA_Y+16,16,1);
+    private final Rectangle LIMITE_IZQUIERDA = new Rectangle(Constantes.CENTRO_VENTANA_X-8,Constantes.CENTRO_VENTANA_Y,1,16);
+    private final Rectangle LIMITE_DERECHA = new Rectangle(Constantes.CENTRO_VENTANA_X+8,Constantes.CENTRO_VENTANA_Y,1,16);
 
-    public Jugador(double posicionX, double posicionY) {
+    public Jugador(double posicionX, double posicionY, Mapa mapa) {
         this.posicionX = posicionX;
         this.posicionY = posicionY;
         direccion = 0;
-        hs = new HojaSprites("/imagenes/hojasPersonajes/Player.png", Constantes.LADOSPRITE, false);
+        hs = new HojaSprites(Constantes.RUTA_JUGADOR, Constantes.LADOSPRITE, false);
         imagenActual = hs.getSprite(0).getImagen();
         enMovimiento = false;
         animacion = 0;
         estado = 0;
+        this.mapa = mapa;
     }
 
     public void actualizar() {
@@ -135,8 +148,108 @@ public class Jugador {
     private void mover(int velocidadX, int velocidadY) {
         enMovimiento = true;
         cambiarDireccion(velocidadX, velocidadY);
-        posicionX += velocidadX * velocidad;
-        posicionY += velocidadY * velocidad;
+        if(!fueraMapa(velocidadX,velocidadY)){
+            if(velocidadX == -1&&!enColisionIzquierda(velocidadX)){
+                posicionX += velocidadX * velocidad;
+            }
+            if(velocidadX == 1 && !enColisionDerecha(velocidadX)){
+                posicionX += velocidadX * velocidad;
+            }
+            if(velocidadY == -1 && !enColisionArriba(velocidadY)){
+                posicionY += velocidadY * velocidad;
+            }
+            if(velocidadY == 1 && !enColisionAbajo(velocidadY)){
+                posicionY += velocidadY * velocidad;
+            }
+        }
+    }
+    
+    private boolean enColisionArriba(int velocidadY){
+        for(int r =0 ; r < mapa.AreasColision.size();r++){
+            final Rectangle area = mapa.AreasColision.get(r);
+            
+            int origenX = area.x;
+            int origenY = area.y + velocidadY * (int)velocidad + 3 * (int)velocidad;
+            
+            final Rectangle areaFutura = new Rectangle(origenX,origenY,Constantes.LADOSPRITE,Constantes.LADOSPRITE);
+            
+            if(LIMITE_ARRIBA.intersects(areaFutura)){
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    private boolean enColisionAbajo(int velocidadY){
+        for(int r =0 ; r < mapa.AreasColision.size();r++){
+            final Rectangle area = mapa.AreasColision.get(r);
+            
+            int origenX = area.x;
+            int origenY = area.y + velocidadY * (int)velocidad - 3 * (int)velocidad;
+            
+            final Rectangle areaFutura = new Rectangle(origenX,origenY,Constantes.LADOSPRITE,Constantes.LADOSPRITE);
+            
+            if(LIMITE_ABAJO.intersects(areaFutura)){
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    private boolean enColisionIzquierda(int velocidadX){
+        for(int r =0 ; r < mapa.AreasColision.size();r++){
+            final Rectangle area = mapa.AreasColision.get(r);
+            
+            int origenX = area.x + velocidadX * (int)velocidad + 3 * (int)velocidad;
+            int origenY = area.y;
+            
+            final Rectangle areaFutura = new Rectangle(origenX,origenY,Constantes.LADOSPRITE,Constantes.LADOSPRITE);
+            
+            if(LIMITE_IZQUIERDA.intersects(areaFutura)){
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    private boolean enColisionDerecha(int velocidadX){
+        for(int r =0 ; r < mapa.AreasColision.size();r++){
+            final Rectangle area = mapa.AreasColision.get(r);
+            
+            int origenX = area.x + velocidadX * (int)velocidad - 3 * (int)velocidad;
+            int origenY = area.y;
+            
+            final Rectangle areaFutura = new Rectangle(origenX,origenY,Constantes.LADOSPRITE,Constantes.LADOSPRITE);
+            
+            if(LIMITE_DERECHA.intersects(areaFutura)){
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Evita que el jugador se salga del mapa.
+     * @param velocidadX
+     * @param velocidadY
+     * @return 
+     */
+    private boolean fueraMapa(final int velocidadX, final int velocidadY){
+        
+        int posicionFuturaX = (int) posicionX + velocidadX * (int)velocidad;
+        int posicionFuturaY = (int) posicionY + velocidadY * (int)velocidad;
+        
+        final Rectangle bordesMapa = mapa.obtenerBordes(posicionFuturaX,posicionFuturaY, ANCHO_JUGADOR, ALTO_JUGADOR);
+        
+        final boolean fuera;
+        
+        if(LIMITE_ARRIBA.intersects(bordesMapa)|| LIMITE_ABAJO.intersects(bordesMapa)||LIMITE_IZQUIERDA.intersects(bordesMapa)||LIMITE_DERECHA.intersects(bordesMapa)){
+            fuera = false;
+        } else{
+            fuera = true;
+        }
+        return fuera;
     }
 
     private void cambiarDireccion(final int velocidadX, final int velocidadY) {
@@ -167,6 +280,12 @@ public class Jugador {
 
         g.setColor(Color.WHITE);
         g.drawImage(imagenActual, centroX, centroY, null);
+        /*
+        g.drawRect(LIMITE_ARRIBA.x, LIMITE_ARRIBA.y, LIMITE_ARRIBA.width, LIMITE_ARRIBA.height);
+        g.drawRect(LIMITE_ABAJO.x, LIMITE_ABAJO.y, LIMITE_ABAJO.width, LIMITE_ABAJO.height);
+        g.drawRect(LIMITE_IZQUIERDA.x, LIMITE_IZQUIERDA.y, LIMITE_IZQUIERDA.width, LIMITE_IZQUIERDA.height);
+        g.drawRect(LIMITE_DERECHA.x, LIMITE_DERECHA.y, LIMITE_DERECHA.width, LIMITE_DERECHA.height);
+        */
     }
 
     public void setPosicionX(double posicionX) {
