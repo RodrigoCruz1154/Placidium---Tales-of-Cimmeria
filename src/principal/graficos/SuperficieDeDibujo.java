@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
+import principal.control.GestorControles;
 import principal.control.Puntero;
 import principal.control.Teclado;
 import principal.maquinadeestado.GestorDeEstados;
@@ -14,20 +15,18 @@ public class SuperficieDeDibujo extends Canvas {
 
     private int ancho;
     private int alto;
-    private Teclado teclado;
     private Puntero raton;
 
     public SuperficieDeDibujo(final int ancho, final int alto) {
         this.ancho = ancho;
         this.alto = alto;
 
-        this.teclado = new Teclado();
         this.raton = new Puntero();
         
         setCursor(raton.getCursor());
         setIgnoreRepaint(true);
         setPreferredSize(new Dimension(ancho, alto));
-        addKeyListener(teclado);
+        addKeyListener(GestorControles.teclado);
         setFocusable(true);
         requestFocus(); //método por defecto de java que al añadirlo, hace que automáticamente la ventana que se cree sea el foco de uso y se pueda usar inmediatamente.
     }
@@ -48,10 +47,6 @@ public class SuperficieDeDibujo extends Canvas {
     }
 
 //Getters    
-    public Teclado getTeclado() {
-        return teclado;
-    }
-
     public int getAncho() {
         return ancho;
     }

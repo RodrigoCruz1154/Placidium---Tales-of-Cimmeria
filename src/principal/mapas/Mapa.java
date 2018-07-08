@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import principal.Constantes;
 import principal.herramientas.CargadorRecursos;
 import principal.sprites.HojaSprites;
 import principal.sprites.Sprite;
@@ -132,12 +133,12 @@ public class Mapa {
         return VectorDeSprites;
     }
 
-    public void dibujar(Graphics g) {
-        int anchoSprite = this.paleta[0].getAncho();
-        int altoSprite = this.paleta[0].getAlto();
+    public void dibujar(Graphics g, int posicionX, int posicionY) {
+        int anchoSprite = Constantes.LADOSPRITE;
+        int altoSprite = anchoSprite;
         for (int y = 0; y < this.alto; y++) {
             for (int x = 0; x < this.ancho; x++) {
-                g.drawImage(paleta[sprites[x+y*this.ancho]].getImagen(), x * anchoSprite, y * altoSprite, null);
+                g.drawImage(paleta[sprites[x+y*this.ancho]].getImagen(), x * anchoSprite - posicionX, y * altoSprite - posicionY, null);
             }
         }
     }

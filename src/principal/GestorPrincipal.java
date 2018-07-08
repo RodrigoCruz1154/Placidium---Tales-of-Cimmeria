@@ -1,5 +1,6 @@
 package principal;
 
+import principal.control.GestorControles;
 import principal.graficos.SuperficieDeDibujo;
 import principal.graficos.Ventana;
 import principal.maquinadeestado.GestorDeEstados;
@@ -24,7 +25,10 @@ public class GestorPrincipal {
 
     public static void main(String[] args) {
         GestorPrincipal juego = new GestorPrincipal("Placidium", 840, 560);
-
+        
+        Constantes.ANCHO_PANTALLA = 840;
+        Constantes.ALTO_PANTALLA = 560;
+        
         juego.iniciarJuego();
         juego.iniciarBuclePrincipal();
     }
@@ -60,6 +64,7 @@ public class GestorPrincipal {
             while (delta >= 1) {
                 actualizar();
                 aps++;
+                Constantes.APS = aps;
                 delta--;
             }
 
@@ -69,6 +74,7 @@ public class GestorPrincipal {
                 System.out.println("APS: " + aps +  " FPS: " + fps);
 //                ventana.setTitle(NOMBRE + " || APS: " + aps +  " || FPS: " + fps);
                 aps = 0; //se reinicializan para que vuelva a contar y no tienda al infinito, lo mismo con fps.
+                Constantes.APS = aps;
                 fps = 0;
                 referenciaContador = System.nanoTime();
             }
@@ -86,7 +92,6 @@ public class GestorPrincipal {
     }
 
     private void actualizar() {
-        sd.getTeclado().actualizar();
         ge.actualizar();
     }
 

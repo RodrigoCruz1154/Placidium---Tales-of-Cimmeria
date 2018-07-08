@@ -5,39 +5,56 @@ import java.awt.event.KeyListener;
 
 public final class Teclado implements KeyListener{
     
-    private final static int NUMERO_TECLAS = 256;
-    private final boolean[] teclas = new boolean[NUMERO_TECLAS];
-
-    public boolean arriba;
-    public boolean abajo;
-    public boolean izquierda;
-    public boolean derecha;
-    public boolean espacio;
-    public boolean shift;
-    public boolean salir;
+    public Tecla arriba = new Tecla();
+    public Tecla abajo = new Tecla();
+    public Tecla izquierda = new Tecla();
+    public Tecla derecha = new Tecla();
+    public Tecla esc = new Tecla();
     
-    public void actualizar(){
-        salir = teclas[KeyEvent.VK_ESCAPE];
-        arriba = teclas[KeyEvent.VK_W];
-        abajo = teclas[KeyEvent.VK_S];
-        izquierda = teclas[KeyEvent.VK_A];
-        derecha = teclas[KeyEvent.VK_D];
-        espacio = teclas[KeyEvent.VK_SPACE];
-        shift = teclas[KeyEvent.VK_SHIFT];
-    }
-    
-    public void keyPressed(KeyEvent e) { //método para cuando se pulse una tecla
-        teclas[e.getKeyCode()] = true;
-
+    @Override
+    public void keyTyped(KeyEvent e) {        
     }
 
-    public void keyReleased(KeyEvent e) { //método para cuando se suelte una tecla
-        teclas[e.getKeyCode()] = false;
-    }
-    
-        public void keyTyped(KeyEvent e) { // LA ACCIÓN COMPLETA DE SOLTAR Y PRESIONAR LA TECLA
-        
+    @Override
+    public void keyPressed(KeyEvent e) {
+        switch(e.getKeyCode()){
+            case KeyEvent.VK_W:
+                arriba.teclaPulsada();
+                break;
+            case KeyEvent.VK_S:
+                abajo.teclaPulsada();
+                break;
+            case KeyEvent.VK_A:
+                izquierda.teclaPulsada();
+                break;
+            case KeyEvent.VK_D:
+                derecha.teclaPulsada();
+                break;
+            case KeyEvent.VK_ESCAPE:
+                esc.teclaPulsada();
+                break;            
+        }
     }
 
+    @Override
+    public void keyReleased(KeyEvent e) {
+        switch(e.getKeyCode()){
+            case KeyEvent.VK_W:
+                arriba.teclaLiberada();
+                break;
+            case KeyEvent.VK_S:
+                abajo.teclaLiberada();
+                break;
+            case KeyEvent.VK_A:
+                izquierda.teclaLiberada();
+                break;
+            case KeyEvent.VK_D:
+                derecha.teclaLiberada();
+                break;
+            case KeyEvent.VK_ESCAPE:
+                esc.teclaLiberada();
+                break;            
+        }
+    }
     
 }
