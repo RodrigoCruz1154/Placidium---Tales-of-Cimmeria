@@ -30,7 +30,7 @@ public class GestorDeEstados {
         estadoActual.actualizar();
     }
     
-    public void dibuajar(final Graphics g){
+    public void dibujar(final Graphics g){
         estadoActual.dibujar(g);
     }
     

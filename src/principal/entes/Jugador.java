@@ -28,6 +28,7 @@ public class Jugador {
     private boolean enMovimiento;
 
     private int animacion;
+    private int animation;
 
     private int estado;
     
@@ -41,9 +42,9 @@ public class Jugador {
     private final Rectangle LIMITE_IZQUIERDA = new Rectangle(Constantes.CENTRO_VENTANA_X-8,Constantes.CENTRO_VENTANA_Y,1,16);
     private final Rectangle LIMITE_DERECHA = new Rectangle(Constantes.CENTRO_VENTANA_X+8,Constantes.CENTRO_VENTANA_Y,1,16);
 
-    public Jugador(double posicionX, double posicionY, Mapa mapa) {
-        this.posicionX = posicionX;
-        this.posicionY = posicionY;
+    public Jugador(Mapa mapa) {
+        posicionX = mapa.getPosicionInicial().getX();
+        posicionY = mapa.getPosicionInicial().getY();
         direccion = 0;
         hs = new HojaSprites(Constantes.RUTA_JUGADOR, Constantes.LADOSPRITE, false);
         imagenActual = hs.getSprite(0).getImagen();
@@ -59,8 +60,8 @@ public class Jugador {
         determinarDireccion();
         animar();
         if(GestorControles.teclado.corriendo){
-            velocidad = 1.8;
-            cambiarAnimacionEstadoCorriendo();
+            velocidad = 2;
+            cambiarAnimacionEstadoCorriendo();            
             animar();
         } else{
             velocidad = 1;
@@ -86,17 +87,18 @@ public class Jugador {
         }
     }
     private void cambiarAnimacionEstadoCorriendo() {
-        if(animacion<60){
-            animacion++;
+        if(this.animation<40){
+            this.animation++;
         } else{
-            animacion = 0;
+            this.animation = 0;
         }
-        if(animacion < 15){
+        if(this.animation <= 10){
             estado = 3;
-        } else if(animacion < 30){
+        } 
+        if(this.animation >10 && this.animation <=20){
             estado = 4;
         }
-        else if(animacion < 45){
+        if(this.animation>20 && this.animation <= 30){
             estado = 5;
         }
     }
@@ -298,8 +300,8 @@ public class Jugador {
     }
 
     public void dibujar(Graphics g) {
-        final int centroX = Constantes.ANCHO_PANTALLA / 2 - Constantes.LADOSPRITE / 2;
-        final int centroY = Constantes.ALTO_PANTALLA / 2 - Constantes.LADOSPRITE / 2;
+        final int centroX = Constantes.ANCHO_JUEGO / 2 - Constantes.LADOSPRITE / 2;
+        final int centroY = Constantes.ALTO_JUEGO / 2 - Constantes.LADOSPRITE / 2;
 
         g.setColor(Color.WHITE);
         g.drawImage(imagenActual, centroX, centroY, null);
@@ -326,5 +328,22 @@ public class Jugador {
     public double getPosicionY() {
         return posicionY;
     }
+
+    public Rectangle getLIMITE_ARRIBA() {
+        return LIMITE_ARRIBA;
+    }
+
+    public Rectangle getLIMITE_ABAJO() {
+        return LIMITE_ABAJO;
+    }
+
+    public Rectangle getLIMITE_IZQUIERDA() {
+        return LIMITE_IZQUIERDA;
+    }
+
+    public Rectangle getLIMITE_DERECHA() {
+        return LIMITE_DERECHA;
+    }
+    
 
 }

@@ -14,11 +14,32 @@ import principal.sprites.HojaSprites;
  * Clase encargada de dibujar los graficos en pantalla.
  */
 public class Gestordejuego implements EstadoJuego{    
-    Mapa mapa = new Mapa(Constantes.RUTA_MAPA);
-    Jugador jugador = new Jugador(20,130,mapa);
+    Mapa mapa;
+    Jugador jugador;
+    
+    public Gestordejuego() {
+        iniciarMapa(Constantes.RUTA_MAPA);
+        iniciarJugador();
+    }
+    
+    private void recargarJuego(){
+        final String ruta = "/mapas/" + mapa.getSiguienteMapa();
+        iniciarMapa(ruta);
+        iniciarJugador();
+    }
+    
+    private void iniciarMapa(final String ruta){
+        mapa = new Mapa(ruta);
+    }
+    private void iniciarJugador(){
+        jugador = new Jugador(mapa);
+    }
     
     @Override
     public void actualizar() {
+        if(jugador.getLIMITE_ARRIBA().intersects(mapa.getZonaSalida())){
+            recargarJuego();
+        }
         jugador.actualizar();
         mapa.actualizar((int)jugador.getPosicionX(),(int)jugador.getPosicionY());
     }
@@ -31,6 +52,7 @@ public class Gestordejuego implements EstadoJuego{
         g.setColor(Color.YELLOW);
         g.drawString("x: " + jugador.getPosicionX(), 20, 20);
         g.drawString("y: " + jugador.getPosicionY(), 20, 30);
+        //g.fillRect(((int)mapa.getZonaSalida().getX()), ((int)mapa.getZonaSalida().getY()), ((int)mapa.getZonaSalida().getWidth()), ((int)mapa.getZonaSalida().getHeight()));
     }
     
 }

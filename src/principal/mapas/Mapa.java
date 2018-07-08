@@ -1,6 +1,7 @@
 package principal.mapas;
 
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -18,15 +19,22 @@ public class Mapa {
     private final int alto;
 
     private final Sprite[] paleta;
+    
+    private final Point posicionInicial;
+    private final Point puntoSalida;
+    
+    private final String siguienteMapa;
 
     private final boolean[] colisiones;
 
+    private Rectangle zonaSalida;
+    
     public ArrayList<Rectangle> AreasColision = new ArrayList <Rectangle>();
     
     private final int[] sprites;
 
-    private final int MARGEN_X = Constantes.ANCHO_PANTALLA / 2 - Constantes.LADOSPRITE / 2;
-    private final int MARGEN_Y = Constantes.ALTO_PANTALLA / 2 - Constantes.LADOSPRITE / 2;
+    private final int MARGEN_X = Constantes.ANCHO_JUEGO / 2 - Constantes.LADOSPRITE / 2;
+    private final int MARGEN_Y = Constantes.ALTO_JUEGO / 2 - Constantes.LADOSPRITE / 2;
 
 //constructores    
     public Mapa(final String ruta) {
@@ -52,6 +60,23 @@ public class Mapa {
         String[] cadenasSprites = spritesEnteros.split(" ");
 
         sprites = extraerSprites(cadenasSprites);
+        
+        String posicion = partes[6];
+        String[] posiciones = posicion.split("-");
+        
+        posicionInicial = new Point();
+        posicionInicial.x = Integer.parseInt(posiciones[0])*Constantes.LADOSPRITE;
+        posicionInicial.y = Integer.parseInt(posiciones[1])*Constantes.LADOSPRITE;
+        
+        String transicion = partes[7];
+        String[] datosTransicion = transicion.split("-");
+        
+        puntoSalida = new Point();
+        puntoSalida.x = Integer.parseInt(datosTransicion[0]);
+        puntoSalida.y = Integer.parseInt(datosTransicion[1]);        
+        siguienteMapa = datosTransicion[2];
+        
+        zonaSalida = new Rectangle();
     }
 //métodos
 
@@ -154,6 +179,7 @@ public class Mapa {
     
     public void actualizar(final int posicionX, final int posicionY){
         actualizarAreasColision(posicionX,posicionY);
+        actualizarZonaTransicion(posicionX,posicionY);
     }
     
     private void actualizarAreasColision(final int posicionX, final int posicionY){
@@ -174,6 +200,12 @@ public class Mapa {
         }
     }
 
+    private void actualizarZonaTransicion(final int posicionX, final int posicionY) {
+        int puntoX = ((int)puntoSalida.getX())*Constantes.LADOSPRITE - posicionX + MARGEN_X;
+        int puntoY = ((int)puntoSalida.getY())*Constantes.LADOSPRITE - posicionY + MARGEN_Y;
+        
+        zonaSalida = new Rectangle(puntoX,puntoY,Constantes.LADOSPRITE,Constantes.LADOSPRITE);
+    }
     public Rectangle obtenerBordes(final int posicionX, final int posicionY, final int anchoJugador, final int altoJugador) {
         int x = MARGEN_X - posicionX + anchoJugador;
         int y = MARGEN_Y - posicionY + altoJugador;
@@ -203,5 +235,22 @@ public class Mapa {
     public Sprite[] getPaleta() {
         return paleta;
     }
+
+    public Point getPosicionInicial() {
+        return posicionInicial;
+    }
+
+    public Point getPuntoSalida() {
+        return puntoSalida;
+    }
+
+    public String getSiguienteMapa() {
+        return siguienteMapa;
+    }
+
+    public Rectangle getZonaSalida() {
+        return zonaSalida;
+    }
+    
 
 }

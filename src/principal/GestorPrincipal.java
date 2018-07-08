@@ -16,6 +16,9 @@ public class GestorPrincipal {
     private SuperficieDeDibujo sd;
     private Ventana ventana;
     private GestorDeEstados ge;
+    
+    private static int fps = 0;
+    private static int aps = 0;
 
     private GestorPrincipal(final String titulo, final int ancho, final int alto) {
         this.titulo = titulo;
@@ -24,10 +27,10 @@ public class GestorPrincipal {
     }
 
     public static void main(String[] args) {
-        GestorPrincipal juego = new GestorPrincipal("Placidium", 840, 560);
+        GestorPrincipal juego = new GestorPrincipal("Placidium", Constantes.ANCHO_PANTALLA_COMPLETA, Constantes.ALTO_PANTALLA_COMPLETA);
         
-        Constantes.ANCHO_PANTALLA = 840;
-        Constantes.ALTO_PANTALLA = 560;
+        Constantes.ANCHO_JUEGO = 840;
+        Constantes.ALTO_JUEGO = 560;
         
         juego.iniciarJuego();
         juego.iniciarBuclePrincipal();
@@ -40,8 +43,8 @@ public class GestorPrincipal {
 
     private void iniciarBuclePrincipal() {
 
-        int aps = 0;
-        int fps = 0;
+        int ActualizacionesAcumuladas = 0;
+        int FramesAcumulados = 0;
 
         final int NS_POR_SEGUNDO = 1000000000; //La cantidad de nanosegundos en un segundo.
         final int APS_OBJETIVO = 60; //ENTRE MENOR EL NÚMERO DE ACTUALIZACIONES, ES MÁS EFICIENTE EL JUEGO, PERO TAMPOCO DEBE SER MUY BAJO. La cantidad de actualizaciones por segundo
@@ -63,19 +66,20 @@ public class GestorPrincipal {
 
             while (delta >= 1) {
                 actualizar();
-                aps++;
-                Constantes.APS = aps;
+                ActualizacionesAcumuladas++;
                 delta--;
             }
 
             dibujar();
-            fps++;
+            FramesAcumulados++;
             if (System.nanoTime() - referenciaContador > NS_POR_SEGUNDO) {
-                System.out.println("APS: " + aps +  " FPS: " + fps);
-//                ventana.setTitle(NOMBRE + " || APS: " + aps +  " || FPS: " + fps);
-                aps = 0; //se reinicializan para que vuelva a contar y no tienda al infinito, lo mismo con fps.
-                Constantes.APS = aps;
-                fps = 0;
+                
+                this.fps = FramesAcumulados;
+                this.aps = ActualizacionesAcumuladas;
+                
+//                ventana.setTitle(NOMBRE + " || APS: " + ActualizacionesAcumuladas +  " || FPS: " + FramesAcumulados);
+                ActualizacionesAcumuladas = 0; //se reinicializan para que vuelva a contar y no tienda al infinito, lo mismo con FramesAcumulados.
+                FramesAcumulados = 0;
                 referenciaContador = System.nanoTime();
             }
         }
@@ -93,9 +97,19 @@ public class GestorPrincipal {
 
     private void actualizar() {
         ge.actualizar();
+        sd.actualizar();
     }
 
     private void dibujar() {
         sd.dibujar(ge);
     }
+//getters
+    public static int getFps() {
+        return fps;
+    }
+
+    public static int getAps() {
+        return aps;
+    }
+    
 }
