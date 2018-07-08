@@ -59,8 +59,9 @@ public class Jugador {
         determinarDireccion();
         animar();
         if(GestorControles.teclado.corriendo){
-            velocidad = 2;
-            animarCorriendo();
+            velocidad = 1.8;
+            cambiarAnimacionEstadoCorriendo();
+            animar();
         } else{
             velocidad = 1;
         }
@@ -69,6 +70,7 @@ public class Jugador {
         }
     }
 
+    
     private void cambiarAnimacionEstado() {
         
         if(animacion<30){
@@ -83,7 +85,22 @@ public class Jugador {
             estado = 2;
         }
     }
-
+    private void cambiarAnimacionEstadoCorriendo() {
+        if(animacion<60){
+            animacion++;
+        } else{
+            animacion = 0;
+        }
+        if(animacion < 15){
+            estado = 3;
+        } else if(animacion < 30){
+            estado = 4;
+        }
+        else if(animacion < 45){
+            estado = 5;
+        }
+    }
+    
     private void determinarDireccion() {
         final int velocidadX = evaluarVelocidadX();
         final int velocidadY = evaluarVelocidadY();
@@ -278,14 +295,6 @@ public class Jugador {
             animacion = 0;
         }
         imagenActual = hs.getSprite(direccion, estado).getImagen();
-    }
-    
-    private void animarCorriendo() {
-        if(!enMovimiento){
-            estado = 0;
-            animacion = 0;
-        }
-        imagenActual = hs.getSprite(direccion, estado+2).getImagen();
     }
 
     public void dibujar(Graphics g) {
